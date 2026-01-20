@@ -59,6 +59,7 @@ public class StudentsDAOImp implements StudentsDAO{
             try(ResultSet rs= stmt.executeQuery()) {
                 if(rs.next()){
                     student=new Students();
+                    student.setId(rs.getInt("id"));
                     student.setName(rs.getString("name"));
                     student.setEmail(rs.getString("email"));
                     student.setMobile(rs.getString("mobile"));
