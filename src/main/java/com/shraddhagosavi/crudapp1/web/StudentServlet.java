@@ -30,7 +30,7 @@ public class StudentServlet  extends HttpServlet {
                     break;
                 case "edit":
                     break;
-                case "delete":
+                case "delete":deleteStudents(req, resp);
                     break;
                 case "insert":
                     break;
@@ -50,9 +50,9 @@ public class StudentServlet  extends HttpServlet {
     }
 
     private void deleteStudents(HttpServletRequest req,HttpServletResponse resp)throws ServletException, IOException{
-        List<Students> studentlist =StudentsDAO.getAllStudents();
-        req.setAttribute("students",studentlist);
-        req.getRequestDispatcher("students-list.jsp").forward(req,resp);
+       int id=Integer.parseInt(req.getParameter("id"));
+       StudentsDAO.delete(id);
+       resp.sendRedirect("students?action=list&success=Deleted Successfully");
     }
 
     @Override
