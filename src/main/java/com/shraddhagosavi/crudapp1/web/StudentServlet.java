@@ -40,7 +40,11 @@ public class StudentServlet  extends HttpServlet {
 
             }
         }catch(DAOException e){
+            req.setAttribute("errorMessage",e.getMessage());
+            req.setAttribute("errorCause",e.getCause());
+            req.setAttribute("errorException",e);
             e.printStackTrace();
+            req.getRequestDispatcher("error.jsp").forward(req,resp);
         }
     }
     private void listStudents(HttpServletRequest req,HttpServletResponse resp)throws ServletException, IOException{
