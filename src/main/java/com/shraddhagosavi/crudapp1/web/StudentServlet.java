@@ -26,15 +26,15 @@ public class StudentServlet  extends HttpServlet {
         if(action==null) action="list";
         try {
             switch (action) {
-                case "add":
+                case "add": showNewForm(req,resp);
                     break;
-                case "edit":
+                case "edit":showEditForm(req,resp);
                     break;
                 case "delete":deleteStudents(req, resp);
                     break;
-                case "insert":
+                case "insert":insertStudents(req,resp);
                     break;
-                case "update":
+                case "update":updateStudents(req,resp);
                     break;
                 default:listStudents(req,resp); //case"list";
 
@@ -47,6 +47,21 @@ public class StudentServlet  extends HttpServlet {
             req.getRequestDispatcher("error.jsp").forward(req,resp);
         }
     }
+    private void showNewForm(HttpServletRequest req,HttpServletResponse resp)throws ServletException, IOException{
+
+        req.getRequestDispatcher("students-form.jsp").forward(req,resp);
+    }
+
+    private void showEditForm(HttpServletRequest req,HttpServletResponse resp)throws ServletException, IOException{
+
+      int id =Integer.parseInt(req.getParameter("id"));
+      Students student =StudentsDAO.getStudentById(id);
+      req.setAttribute("student",student);
+      req.getRequestDispatcher("students-form.jsp").forward(req,resp);
+    }
+
+
+
     private void listStudents(HttpServletRequest req,HttpServletResponse resp)throws ServletException, IOException{
          List<Students> studentlist =StudentsDAO.getAllStudents();
          req.setAttribute("students",studentlist);
@@ -58,7 +73,24 @@ public class StudentServlet  extends HttpServlet {
        StudentsDAO.delete(id);
        resp.sendRedirect("students?action=list&success=Deleted Successfully");
     }
+    private void insertStudents(HttpServletRequest req,HttpServletResponse resp)throws ServletException, IOException{
+        String name=req.getParameter("name");
+        String email=req.getParameter("email");
+        String mobile=req.getParameter("mobile");
 
+        StudentsDAO.insert(new Students(name.trim(),email.trim(),mobile.trim()));
+        resp.sendRedirect("students?action=list&success=Inserted Successfully");
+    }
+
+    private void updateStudents(HttpServletRequest req,HttpServletResponse resp)throws ServletException, IOException{
+        int id=Integer.parseInt(req.getParameter("id"));
+        String name=req.getParameter("name");
+        String email=req.getParameter("email");
+        String mobile=req.getParameter("mobile");
+
+        StudentsDAO.update(new Students(id,name.trim(),email.trim(),mobile.trim()));
+        resp.sendRedirect("students?action=list&success=Updated Successfully");
+    }
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         doGet(req,resp);
