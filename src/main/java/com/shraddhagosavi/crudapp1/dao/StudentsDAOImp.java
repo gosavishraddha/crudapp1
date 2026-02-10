@@ -2,7 +2,7 @@ package com.shraddhagosavi.crudapp1.dao;
 
 import com.shraddhagosavi.crudapp1.exception.DAOException;
 import com.shraddhagosavi.crudapp1.model.Students;
-import com.shraddhagosavicrudapp1.utils.JDBCUtils;
+import com.shraddhagosavi.crudapp1.utils.JDBCUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

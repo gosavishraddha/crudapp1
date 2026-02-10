@@ -1,4 +1,4 @@
-package com.shraddhagosavicrudapp1.utils;
+package com.shraddhagosavi.crudapp1.utils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
