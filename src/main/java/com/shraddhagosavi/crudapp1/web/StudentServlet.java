@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 @WebServlet(urlPatterns = {"/","/students"})
@@ -36,7 +37,7 @@ public class StudentServlet  extends HttpServlet {
                     break;
                 case "update":updateStudents(req,resp);
                     break;
-                default:listStudents(req,resp); //case"list";
+                default:listStudents(req,resp); //case list
 
             }
         }catch(DAOException e){
@@ -78,6 +79,11 @@ public class StudentServlet  extends HttpServlet {
         String email=req.getParameter("email");
         String mobile=req.getParameter("mobile");
 
+        if(!validate(req,name,email,mobile)){
+            req.getRequestDispatcher("students-form.jsp").forward(req,resp);
+            return;
+        }
+
         StudentsDAO.insert(new Students(name.trim(),email.trim(),mobile.trim()));
         resp.sendRedirect("students?action=list&success=Inserted Successfully");
     }
@@ -87,6 +93,12 @@ public class StudentServlet  extends HttpServlet {
         String name=req.getParameter("name");
         String email=req.getParameter("email");
         String mobile=req.getParameter("mobile");
+
+        if(!validate(req,name,email,mobile)){
+            req.setAttribute("student",new Students(id,name,email,mobile));
+            req.getRequestDispatcher("students-form.jsp").forward(req,resp);
+            return;
+        }
 
         StudentsDAO.update(new Students(id,name.trim(),email.trim(),mobile.trim()));
         resp.sendRedirect("students?action=list&success=Updated Successfully");
@@ -99,5 +111,24 @@ public class StudentServlet  extends HttpServlet {
     @Override
     public void init() throws ServletException {
         StudentsDAO =new StudentsDAOImp();
+    }
+
+    private boolean validate(HttpServletRequest req,String name, String email,String mobile){
+        boolean isValid =true;
+
+        if(name==null  || !Pattern.matches("^[A-Za-z ]{3,50}$",name.trim())){
+            isValid=false;
+            req.setAttribute("nameError","Name should be at least 3 to 50 characters");
+        }
+        if(email==null || !Pattern.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$",email.trim())){
+            isValid=false;
+            req.setAttribute("emailError","invalid email");
+        }
+        if(mobile==null || !Pattern.matches("^[0-9]{10}$",mobile.trim())){
+            isValid=false;
+            req.setAttribute("mobileError","Mobile should be of 10 digits");
+        }
+        return isValid;
+
     }
 }
